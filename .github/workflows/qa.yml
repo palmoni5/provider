@@ -26,3 +26,23 @@ jobs:
         working-directory: packages/provider
       - run: flutter test --no-pub --coverage test/null_safe
         working-directory: packages/provider
+  devtools:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: Otzaria/provider
+          ref: ${{ inputs.revision }}
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.19.6'
+          cache: true
+      - run: flutter pub get
+        working-directory: packages/provider_devtools_extension
+      - run: flutter analyze --no-pub --no-fatal-infos
+        working-directory: packages/provider_devtools_extension
+      - run: flutter test --no-pub --platform chrome test/provider_lazy_test.dart
+        working-directory: packages/provider_devtools_extension
+      - run: flutter build web
+        working-directory: packages/provider_devtools_extension
